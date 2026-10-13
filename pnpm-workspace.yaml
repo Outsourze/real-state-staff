@@ -1,3 +1,6 @@
 allowBuilds:
+  # Required by Cloudflare's Wrangler/OpenNext deployment tooling.
+  esbuild: true
+  workerd: true
   sharp: false
   unrs-resolver: false
