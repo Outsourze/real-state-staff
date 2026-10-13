@@ -29,6 +29,18 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Cloudflare compatibility
+
+Next.js and `eslint-config-next` are pinned to `16.3.8`. Next.js 16.4 currently
+crashes with the OpenNext Cloudflare adapter because it cannot load
+`server/preview-props.json`. Keep these versions pinned until
+[OpenNext issue #1355](https://github.com/opennextjs/opennextjs-cloudflare/issues/1355)
+is resolved. The pnpm build permissions for `esbuild` and `workerd` must also
+remain enabled for Cloudflare deployment.
+
+Cache Components and partial prefetching are disabled because the current
+OpenNext/Workers runtime hangs while rendering this app with them enabled.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
