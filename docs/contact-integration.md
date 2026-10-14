@@ -21,12 +21,20 @@ The implementation is ready, but **delivery stays disabled until real configurat
    | `CONTACT_FROM_EMAIL` | Text or Secret | A bare sender address on the verified domain |
    | `CONTACT_TO_EMAIL`   | Text or Secret | The client's actual receiving inbox          |
 
-5. Deploy the updated application with the existing Workers/OpenNext setup.
+5. Deploy the updated application using the Workers/OpenNext commands in README.
    Build-only secrets are insufficient: the POST route reads them at runtime.
    Keep these values out of `NEXT_PUBLIC_...`, Git, browser code and chat.
 6. Submit one genuine, clearly identified enquiry yourself and confirm receipt
    in the client's inbox. Test Reply as well. The integration cannot confirm
    mailbox delivery until that real check is performed.
+
+Cloudflare branch Previews have separate settings. Production values do not
+carry over to `develop` when using `wrangler preview`. Set the three email
+settings in the Preview Base configuration or the individual Preview to test
+delivery there. Shared Base secrets apply to newly created Previews; existing
+Previews need their own update. Without these settings, the preview form
+truthfully reports that delivery is not connected. See
+[Cloudflare Preview configuration](https://developers.cloudflare.com/workers/previews/configuration/).
 
 For local `npm run dev`, copy `.env.example` to ignored `.env.local`, fill in the
 same three values and restart the server. A shape-only example follows; replace

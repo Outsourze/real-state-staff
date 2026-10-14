@@ -92,10 +92,36 @@ and offers a local copy/download. It does not simulate email delivery.
 
 ## Deployment compatibility
 
-The project works as a standard Next.js project on Vercel and retains the
-existing Cloudflare Workers integration. Use `npm run build` as the build
-command. Cloudflare's existing Wrangler deploy command can remain; make sure
-any manually configured install/build commands use npm rather than pnpm.
+The repository includes a pinned OpenNext adapter and Wrangler, plus
+`open-next.config.ts` and `wrangler.jsonc`. Set these in Cloudflare under
+**Workers & Pages → real-state-staff → Settings → Builds**:
+
+| Setting | Command |
+| --- | --- |
+| Build command | `npm run build:cloudflare` |
+| Production deploy command | `npx wrangler deploy --keep-vars` |
+| Non-production deploy command | `npx wrangler preview` |
+| Root directory | `/` |
+
+Keep `main` as the production branch and enable `develop` for previews.
+`npm run build` builds Next.js alone; `npm run build:cloudflare` also converts
+that output into `.open-next/worker.js` and `.open-next/assets` for Workers.
+Commit and push the configuration and lockfile before retrying the build.
+
+The required `previews` block is included in `wrangler.jsonc`. Preview secrets
+do **not** inherit production values. Configure email settings in the Preview
+Base configuration or the individual Preview if you want to test delivery
+there; otherwise the contact form truthfully reports that it is not connected.
+Keep API keys out of Wrangler configuration and Git. See
+[Cloudflare preview configuration](https://developers.cloudflare.com/workers/previews/configuration/).
+
+For a local Worker preview, run `npm run preview`. To deploy manually, use
+`npm run deploy` (production) or `npm run deploy:preview` (current Git branch).
+The hosted `wrangler preview` command creates a branch deployment; OpenNext's
+`preview` command starts a local Worker server. These are different commands.
+The site currently needs no R2, queue or database resources. Only the static
+assets binding is configured. Generated Worker output and local secrets are
+ignored; approved native dependency install scripts are pinned in package.json.
 
 Keep **Next.js and eslint-config-next pinned to 16.3.8**. Next.js 16.4 currently
 hits [OpenNext issue #1355](https://github.com/opennextjs/opennextjs-cloudflare/issues/1355)

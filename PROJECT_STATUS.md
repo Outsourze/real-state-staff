@@ -2,6 +2,45 @@
 
 Last updated: **2026-10-14 (Asia/Manila)**.
 
+## Latest Cloudflare build diagnosis
+
+The first `develop` screenshot failed because Cloudflare ran `pnpm run build`
+while the project declares npm. After changing that, the Next.js build passed,
+but `npx wrangler preview` failed because the required `previews` block was
+missing. The branch also had no committed Wrangler/OpenNext setup.
+
+Implemented the deployment setup locally:
+- Pinned `@opennextjs/cloudflare` 1.20.11 and Wrangler 4.151.0 in the npm lockfile.
+- Added `wrangler.jsonc` with Worker name `real-state-staff`, generated Worker
+  entry/assets, Node compatibility, observability, `keep_vars`, and `previews: {}`.
+- Added `open-next.config.ts` with default dummy cache providers: this site
+  needs no R2, queue, database or self-reference binding for its current routes.
+- Added `build:cloudflare`, local `preview`, `deploy` and `deploy:preview` scripts.
+- Ignored generated OpenNext/Wrangler output in Git, ESLint and TypeScript;
+  ignored `.dev.vars*` and added immutable static-asset caching headers.
+- Saved pinned npm install-script approvals for esbuild, workerd and the
+  existing unrs-resolver so CI does not need interactive approvals.
+- Updated README deployment commands and contact preview-secret guidance.
+
+**Cloudflare dashboard action still needed:** build command
+`npm run build:cloudflare`; production deploy `npx wrangler deploy --keep-vars`;
+non-production deploy `npx wrangler preview`; root `/`. Keep production `main`.
+Push these local changes to `develop` before retrying. No dashboard settings,
+Git commits, pushes or deployments were performed by this fix.
+
+Validation: the full Cloudflare build passes on pinned Next.js 16.3.8; Wrangler
+deploy dry-run passes (about 1.35 MiB gzip); lint, typecheck and all 38 isolated
+contact tests pass. The generated Worker was served locally with blank example
+email settings: home, contact, robots, sitemap and hero image returned 200;
+Next static assets returned 200 with immutable caching; invalid contact input
+returned 400. No email was sent. The owned local Worker server was stopped.
+Hosted Preview creation still requires a Cloudflare build after pushing.
+
+Preview runtime settings/secrets do not inherit production values. Configure
+email settings for the Preview Base or individual Preview separately if needed.
+The local working tree was clean before the diagnosis; older notes saying all
+website work is uncommitted are historical. Only this deployment fix is local.
+
 ## Email sending — implemented, awaiting configuration
 
 The user authorized building contact email delivery using the recommended
@@ -79,8 +118,9 @@ verified locally. The content maximum is 1200px, excluding responsive gutters.
 ## Current state
 
 The landing page is implemented and ready for local/client review. Do not
-restart or replace the completed website when continuing. All source changes
-remain in the working tree on `develop`; no commit, push or deployment has been performed.
+restart or replace the completed website when continuing. The website work
+has been committed by the user on `develop`; this deployment fix remains local.
+No commit, push or deployment was performed by the assistant.
 
 The complete original brief is saved in `docs/website-brief.md`. The design
 screenshot mentioned in that brief was not provided, so the website follows
@@ -187,7 +227,8 @@ brand reference.
    until configured. No invented social links are displayed.
 5. Cloudflare's production branch is `main`. After review, commit/push and merge
    changes there. Any manually configured install/build commands should now use
-   npm (`npm ci`, `npm run build`). No account changes were made.
+   npm (`npm ci`, `npm run build:cloudflare`). See README for the full
+   production/preview commands. No account changes were made.
 
 ## How to continue
 
