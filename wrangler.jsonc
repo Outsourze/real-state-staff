@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "real-state-staff",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-06",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  // Preserve runtime text settings configured in the Cloudflare dashboard.
+  "keep_vars": true,
+  // Required by `wrangler preview` for non-production branch deployments.
+  // Configure preview email settings separately; production secrets are not inherited.
+  "previews": {}
+}

@@ -1,0 +1,517 @@
+.rolesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1.5rem;
+  background: #dfead9;
+  color: var(--color-primary);
+  border: 1px solid #c6d6c3;
+  border-radius: 6px;
+  transition:
+    background 220ms ease,
+    transform 220ms ease,
+    border-color 220ms ease;
+}
+.roleCard:nth-child(4n + 2) {
+  background: #e8eddf;
+}
+.roleCard:nth-child(4n + 3) {
+  background: #d5e3dc;
+}
+.roleCard:nth-child(4n) {
+  background: #edeade;
+}
+.roleCard:first-child,
+.roleCard:nth-child(6) {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+.roleCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.roleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  background: #ffffff70;
+}
+.roleIndex {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.roleCard:first-child .roleIcon,
+.roleCard:nth-child(6) .roleIcon {
+  background: #ffffff1a;
+}
+.roleCard h3 {
+  margin-top: 20px;
+  font-size: 1.25rem;
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+.roleCard p {
+  margin-top: 12px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+.roleCard:first-child p,
+.roleCard:nth-child(6) p {
+  color: #dfeae1;
+}
+.roleCardLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #003f3240;
+  font-size: 1rem;
+  font-weight: 650;
+}
+.roleCardLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.roleCard:first-child .roleCardLink,
+.roleCard:nth-child(6) .roleCardLink {
+  border-color: #ffffff55;
+}
+.roleCard:hover {
+  transform: translateY(-3px);
+}
+.roleGuide {
+  margin-top: 2rem;
+}
+.roleGuideSummary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 3rem;
+  margin-inline: auto;
+  padding: 0.75rem 0.25rem;
+  border-bottom: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-align: center;
+  cursor: pointer;
+  list-style: none;
+}
+.roleGuideSummary::-webkit-details-marker {
+  display: none;
+}
+.roleGuideSummary svg {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+.roleGuide[open] .roleGuideSummary svg {
+  transform: rotate(90deg);
+}
+.roleContact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  margin-top: 0.75rem;
+  padding-block: 0.5rem;
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.6;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.roleContact svg {
+  flex-shrink: 0;
+}
+
+.benefits {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-primary);
+}
+.benefitsContent {
+  display: grid;
+  grid-template-columns: 1fr 0.95fr;
+  align-items: center;
+  gap: 2rem;
+  width: 70%;
+  min-height: 35rem;
+  padding-block: 5rem;
+}
+.benefitsContent > * {
+  min-width: 0;
+}
+.benefitsContent :global(.section-heading) {
+  font-size: clamp(2.25rem, 2.8vw, 2.625rem);
+}
+.benefitsChecklist {
+  border-left: 1px solid #ffffff40;
+  padding: 1rem 0 1rem 1.75rem;
+}
+.benefitsVisual {
+  position: absolute;
+  inset: 0 0 0 calc(50% + 260px);
+  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+}
+.benefitsVisual img {
+  object-position: 58% center;
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.timeline::before {
+  position: absolute;
+  content: "";
+  top: 1.375rem;
+  left: 1.375rem;
+  right: calc(20% - 1.375rem);
+  height: 1px;
+  background: var(--color-border);
+}
+.timelineItem {
+  position: relative;
+  min-width: 0;
+}
+.stepNumber {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: white;
+  background: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.stepCopy {
+  margin-top: 1.5rem;
+}
+
+.pricing {
+  position: relative;
+  overflow: hidden;
+  min-height: 25rem;
+  background: var(--color-primary);
+}
+.pricingVisual {
+  position: absolute;
+  inset: 0 calc(50% - 20px) 0 0;
+  clip-path: polygon(0 0, 100% 0, 86% 100%, 0 100%);
+}
+.pricingVisual img {
+  object-position: center 58%;
+}
+.pricingCopy {
+  position: relative;
+  margin-left: 51%;
+  padding: 4.5rem 0 4.5rem 2.25rem;
+}
+
+.advantagesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 3rem;
+}
+.advantage {
+  min-width: 0;
+  padding: 0 1.75rem;
+  border-left: 1px solid var(--color-border);
+}
+.advantage:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.advantage:last-child {
+  padding-right: 0;
+}
+
+.about {
+  background: var(--color-surface);
+}
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 0.88fr 1.12fr;
+  gap: 3.5rem;
+}
+.aboutVisual {
+  position: relative;
+  min-height: 36rem;
+}
+.aboutVisual img {
+  object-position: center;
+}
+.imageCaption {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  width: fit-content;
+  padding: 0.75rem 1rem;
+  background: #f7f8f3f5;
+  color: var(--color-heading);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.aboutCopy {
+  min-width: 0;
+  align-self: center;
+  padding-block: 4.5rem;
+}
+.directors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  scroll-margin-top: 9rem;
+}
+.directors article {
+  min-width: 0;
+}
+.directors article + article {
+  border-left: 1px solid var(--color-border);
+  padding-left: 1.5rem;
+}
+.directors:target {
+  outline: 1px solid var(--color-sage);
+  outline-offset: 0.75rem;
+}
+
+.testimonial {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  background: var(--color-surface);
+}
+.cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 22rem;
+  padding-block: 5rem;
+  overflow: hidden;
+  background: var(--color-primary);
+}
+.cta > img {
+  object-position: center 48%;
+}
+.ctaOverlay {
+  position: absolute;
+  inset: 0;
+  background: #002b22d1;
+}
+
+@media (max-width: 1100px) {
+  .benefitsContent {
+    width: 100%;
+    min-height: auto;
+    padding-block: 4.5rem;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+  }
+  .benefitsVisual {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 21rem;
+    clip-path: none;
+  }
+  .timeline {
+    grid-template-columns: 1fr;
+    gap: 0;
+    max-width: 48rem;
+  }
+  .timeline::before {
+    left: 1.375rem;
+    top: 1.375rem;
+    right: auto;
+    bottom: 2.5rem;
+    width: 1px;
+    height: auto;
+  }
+  .timelineStep {
+    display: flex;
+    gap: 1.75rem;
+  }
+  .timelineItem {
+    padding-bottom: 2rem;
+  }
+  .timelineItem:last-child {
+    padding-bottom: 0;
+  }
+  .stepCopy {
+    margin-top: 0;
+    padding-top: 0.5rem;
+  }
+  .stepCopy p {
+    margin-top: 0.5rem;
+  }
+  .advantagesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 0;
+  }
+  .advantage {
+    padding: 0 2rem 0 0;
+    border-left: 0;
+  }
+  .advantage:nth-child(even) {
+    padding: 0 0 0 2rem;
+    border-left: 1px solid var(--color-border);
+  }
+  .advantage:nth-child(n + 3) {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .aboutGrid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .aboutVisual {
+    min-height: 24rem;
+  }
+  .aboutCopy {
+    max-width: 48rem;
+    padding-block: 3.5rem 4.5rem;
+  }
+  .testimonial {
+    padding: 1.75rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .pricingVisual {
+    position: relative;
+    inset: auto;
+    height: 21rem;
+    width: 100%;
+    clip-path: none;
+  }
+  .pricingCopy {
+    margin-left: 0;
+    max-width: 38rem;
+    padding: 3rem 0 3.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .benefitsContent {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-block: 3.75rem;
+  }
+  .benefitsContent :global(.section-heading) {
+    max-width: 32rem;
+  }
+  .benefitsChecklist {
+    padding: 2rem 0 0;
+    border-left: 0;
+    border-top: 1px solid #ffffff40;
+  }
+  .benefitsVisual {
+    height: 18rem;
+  }
+  .timeline {
+    margin-top: 2.25rem;
+  }
+  .timelineStep {
+    gap: 1.25rem;
+  }
+  .pricingVisual {
+    height: 17rem;
+  }
+  .aboutVisual {
+    min-height: 21rem;
+  }
+  .aboutCopy {
+    padding-block: 3rem 3.75rem;
+  }
+  .imageCaption {
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+  }
+  .cta {
+    min-height: 22rem;
+    padding-block: 3.75rem;
+  }
+}
+
+@media (max-width: 599px) {
+  .rolesGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .roleCard {
+    min-height: 0;
+    padding: 1.75rem;
+  }
+  .advantagesGrid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  .advantage,
+  .advantage:nth-child(even),
+  .advantage:nth-child(n + 3) {
+    padding: 1.75rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .advantage:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .directors {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .directors article + article {
+    padding: 1.5rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roleCard,
+  .roleGuideSummary svg {
+    transition: none;
+  }
+  .roleCard:hover {
+    transform: none;
+  }
+}
