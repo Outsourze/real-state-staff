@@ -225,6 +225,25 @@ export async function POST(request: Request) {
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const startedAt = Date.now();
+  let phase: "request" | "receipt" = "request";
+  const reportFailure = (
+    reason: "upstream_rejected" | "timeout" | "network_error" | "invalid_receipt",
+    upstreamStatus?: number,
+    errorType?: "TypeError" | "SyntaxError" | "AbortError" | "Error" | "unknown",
+  ) => {
+    // Fixed diagnostic fields only: never log credentials, addresses, payloads,
+    // provider response bodies or exception messages (which may contain them).
+    console.error(JSON.stringify({
+      event: "contact_delivery_failed",
+      provider: useResend ? "resend" : "webhook",
+      reason,
+      phase,
+      ...(upstreamStatus === undefined ? {} : { upstreamStatus }),
+      ...(errorType === undefined ? {} : { errorType }),
+      elapsedMs: Date.now() - startedAt,
+    }));
+  };
 
   try {
     const response = await fetch(destination, {
@@ -237,6 +256,7 @@ export async function POST(request: Request) {
     });
 
     if (!response.ok) {
+      reportFailure("upstream_rejected", response.status);
       if (useResend && response.status === 429) {
         return json(
           "Our enquiry service has reached its sending limit. Your enquiry has not been sent. Please save a copy and try again later.",
@@ -264,6 +284,7 @@ export async function POST(request: Request) {
     }
 
     if (useResend) {
+      phase = "receipt";
       const receipt: unknown = await response.json();
       if (
         !receipt ||
@@ -281,7 +302,21 @@ export async function POST(request: Request) {
       200,
       "received",
     );
-  } catch {
+  } catch (error) {
+    const errorType =
+      error instanceof Error &&
+      ["TypeError", "SyntaxError", "AbortError", "Error"].includes(error.name)
+        ? (error.name as "TypeError" | "SyntaxError" | "AbortError" | "Error")
+        : "unknown";
+    reportFailure(
+      controller.signal.aborted
+        ? "timeout"
+        : phase === "receipt"
+          ? "invalid_receipt"
+          : "network_error",
+      undefined,
+      errorType,
+    );
     return json(
       "We could not confirm delivery. Your details are still here. Please save a copy and check with the team before trying again.",
       502,

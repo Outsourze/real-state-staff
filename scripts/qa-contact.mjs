@@ -41,6 +41,9 @@ function load(source, filename, additions = {}) {
       URL,
       TextDecoder,
       AbortController,
+      Error,
+      TypeError,
+      SyntaxError,
       crypto,
       setTimeout,
       clearTimeout,
@@ -73,9 +76,11 @@ async function run(
     code = "not_connected",
     receiver,
     fastTimeout = false,
+    diagnostic,
   } = {},
 ) {
   const calls = [];
+  const logs = [];
   const route = load(routeSource, "contact-route.ts", {
     require: (id) =>
       id === "@/lib/contact-schema"
@@ -84,6 +89,7 @@ async function run(
           ? email
           : require(id),
     process: { env },
+    console: { error: (entry) => logs.push(JSON.parse(entry)) },
     ...(fastTimeout
       ? {
           setTimeout: (callback, milliseconds) =>
@@ -105,6 +111,31 @@ async function run(
   const result = await response.json();
   assert.equal(response.status, expected, name);
   assert.equal(result.code, code, name);
+  if (expected === 502 || expected === 429) {
+    assert.equal(logs.length, 1, `${name}: one safe failure diagnostic`);
+    assert.equal(logs[0].event, "contact_delivery_failed");
+    assert.equal(typeof logs[0].elapsedMs, "number");
+    for (const key of Object.keys(logs[0])) {
+      assert([
+        "event", "provider", "reason", "phase", "upstreamStatus", "elapsedMs", "errorType",
+      ].includes(key));
+    }
+  } else {
+    assert.equal(logs.length, 0, `${name}: no unnecessary delivery logs`);
+  }
+  if (diagnostic) {
+    for (const [key, value] of Object.entries(diagnostic)) {
+      assert.equal(logs[0]?.[key], value, `${name}: diagnostic ${key}`);
+    }
+  }
+  const logText = JSON.stringify(logs);
+  for (const sensitive of [
+    ...Object.values(env), valid.fullName, valid.email, valid.company,
+    valid.message, "private provider detail", "Provider error detail",
+    "Mock network failure", "Mock timeout",
+  ]) {
+    if (sensitive) assert(!logText.includes(sensitive), `${name}: no sensitive log content`);
+  }
   if (env.RESEND_API_KEY)
     assert(
       !JSON.stringify(result).includes(env.RESEND_API_KEY),
@@ -373,18 +404,21 @@ for (const status of [401, 403, 422, 429, 500, 503, 409])
         { message: "Provider error detail", name: "mock_error" },
         { status },
       ),
+    diagnostic: { reason: "upstream_rejected", upstreamStatus: status, provider: "resend" },
   });
 await run("Resend 2xx without a receipt is unconfirmed", {
   env: resendEnv,
   expected: 502,
   code: "delivery_unknown",
   receiver: async () => Response.json({}),
+  diagnostic: { reason: "invalid_receipt", phase: "receipt" },
 });
 await run("Unreadable Resend receipt is unconfirmed", {
   env: resendEnv,
   expected: 502,
   code: "delivery_unknown",
   receiver: async () => new Response("not json", { status: 200 }),
+  diagnostic: { reason: "invalid_receipt", phase: "receipt" },
 });
 await run("Resend network failure is unconfirmed", {
   env: resendEnv,
@@ -393,12 +427,34 @@ await run("Resend network failure is unconfirmed", {
   receiver: async () => {
     throw new Error("Mock network failure");
   },
+  diagnostic: { reason: "network_error", phase: "request", errorType: "Error" },
+});
+await run("Immediate fetch TypeError is classified without leaking its message", {
+  env: resendEnv,
+  expected: 502,
+  code: "delivery_unknown",
+  receiver: async () => {
+    throw new TypeError(`Request failed for ${valid.email} with ${resendEnv.RESEND_API_KEY}`);
+  },
+  diagnostic: { reason: "network_error", errorType: "TypeError" },
+});
+await run("Untrusted exception names are excluded from logs", {
+  env: resendEnv,
+  expected: 502,
+  code: "delivery_unknown",
+  receiver: async () => {
+    const error = new Error("private provider detail");
+    error.name = valid.email;
+    throw error;
+  },
+  diagnostic: { reason: "network_error", errorType: "unknown" },
 });
 await run("Resend timeout aborts request and never reports success", {
   env: resendEnv,
   expected: 502,
   code: "delivery_unknown",
   fastTimeout: true,
+  diagnostic: { reason: "timeout", phase: "request" },
   receiver: async (_url, options) =>
     new Promise((_resolve, reject) =>
       options.signal.addEventListener(

@@ -2,6 +2,38 @@
 
 Last updated: **2026-10-15 (Asia/Manila)**.
 
+## Active issue — deployed contact form returns 502
+
+Latest screenshots confirm Cloudflare zone `realestatestaff.nz` is Active,
+root and `www` are attached to the production Worker, and Resend shows the
+root domain Verified with sending enabled. The user has configured the three
+production runtime secrets; encrypted values and Google inbox operation have
+not been independently verified. This supersedes the earlier pending DNS and
+Resend verification context below.
+
+The page loads, but submitting the form shows `delivery_unknown`. Resend logs
+are reportedly empty. The supplied `/api/contact` invocation returned 502 with
+outcome `ok`, wall time 16ms and CPU time 15ms. It did not time out or terminate
+for CPU exhaustion. The displayed CPU-limit errors belong to a separate
+`GET /.env.stage` request; do not attribute them to the contact POST.
+
+Added safe `contact_delivery_failed` console diagnostics in the route for
+upstream rejection/status, network failure, timeout and invalid receipt, with
+allowlisted exception types. No exception/provider messages, addresses,
+payloads, keys or webhook URLs are logged. Existing response codes, delivery
+behavior and retry/idempotency safeguards remain unchanged. This is diagnostic
+instrumentation; the deployed root cause is still unconfirmed.
+
+All 40 isolated contact checks pass with zero outbound requests, including
+failure classification and log privacy checks. The final Cloudflare build
+(Next.js, TypeScript and OpenNext Worker bundle) and diff check pass.
+Deploy the diagnostics through the user's normal Git
+workflow before inspecting a fresh failed POST and its console event; remove
+the `exists($metadata.error)` view filter if it hides console entries. Changes
+are local on `develop`; no commit, push, deployment, secret/account modification
+or real email was performed. Next: inspect the new reason/status/type and fix
+the evidenced runtime/provider issue; verify delivery to Paul's inbox.
+
 ## Latest client changes — public contact details
 
 Paul supplied `hello@realestatestaff.nz` and phone/WhatsApp `+64 22 646 6569`
