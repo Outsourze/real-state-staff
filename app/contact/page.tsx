@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import { ContactLinks } from "@/components/ui/ContactLinks";
 import styles from "./ContactPage.module.css";
 
 const title = "Contact our team";
@@ -148,6 +149,9 @@ function ContactIntroduction() {
         <span>Write an enquiry</span>
         <ArrowDown size={18} aria-hidden="true" />
       </Link>
+      <div className={styles.directContacts}>
+        <ContactLinks />
+      </div>
       <figure className={styles.workspace}>
         <div className={styles.workspacePhoto}>
           <Image

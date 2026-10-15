@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import { ContactLinks } from "@/components/ui/ContactLinks";
 import {
   ArrowDownToLine,
   ArrowRight,
@@ -254,13 +255,11 @@ export function ContactSection({
                   </li>
                 ))}
               </ul>
-              <div className="mt-10 max-w-sm border-t border-[var(--color-border)] pt-6 lg:mt-14">
-                <p className="text-base font-semibold tracking-[0.08em] text-[var(--color-heading)] uppercase">
-                  YOUR NEXT CHAPTER, TOGETHER.
-                </p>
-                <p className="mt-3 text-base leading-relaxed text-[var(--color-text)]">
-                  One person or a whole team. Let’s find what works for you.
-                </p>
+              <div className="mt-8">
+                <h3 className="mb-4 text-base font-semibold text-[var(--color-heading)]">
+                  Contact our team
+                </h3>
+                <ContactLinks />
               </div>
               <div className="mt-8">
                 <h3 className="mb-4 text-base font-semibold text-[var(--color-heading)]">

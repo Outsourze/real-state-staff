@@ -491,6 +491,8 @@ summary,
 }
 .footer-connect {
   justify-self: end;
+  width: 100%;
+  max-width: 100%;
 }
 .footer-contact {
   display: flex;

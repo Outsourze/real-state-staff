@@ -53,6 +53,9 @@ Screenshots and detailed reports are saved in the ignored `output/qa/` directory
 - Local optimized WebP photography and a lightweight SVG brand mark.
 - Privacy and terms draft routes, metadata, Open Graph, sitemap and robots.
 - Clearly disclosed sample testimonials. No invented social account links.
+- Client-approved email, phone and WhatsApp links in the contact page,
+  homepage contact section and footer: `hello@realestatestaff.nz`,
+  `+64 22 646 6569`. Public values live in `lib/contact-details.ts`.
 
 The owner subsequently requested a new hero, larger text and colored cards,
 and authorized improving the design freely. The original content and palette

@@ -2,6 +2,41 @@
 
 Last updated: **2026-10-15 (Asia/Manila)**.
 
+## Latest client changes — public contact details
+
+Paul supplied `hello@realestatestaff.nz` and phone/WhatsApp `+64 22 646 6569`
+for display. These are implemented in `businessContact` in
+`lib/contact-details.ts`, with reusable `ContactLinks` and a CSS Module.
+The homepage contact section, dedicated contact introduction and footer show
+clickable email, telephone and WhatsApp links. Destinations are
+`mailto:hello@realestatestaff.nz`, `tel:+64226466569`, and
+`https://wa.me/64226466569`. All visible labels/values are at least 16px,
+targets at least 44px, email wraps on narrow layouts, and the WhatsApp link
+has a new-tab notice and `noopener noreferrer`. No message is sent on page load.
+
+The full Cloudflare build/TypeScript pass, and generated home/contact HTML
+contains the exact approved email, phone and WhatsApp destinations. All 33
+browser checks pass, including automated accessibility checks and reflow at
+320–1920px and 200% text size. Desktop/mobile screenshots were reviewed with
+no horizontal overflow. Email delivery credentials were blank in the owned
+test server; no real messages were sent, and test processes have stopped.
+
+The working tree was clean at the start of this contact update, so the earlier
+hero/logo/price changes have been committed by the user. This contact update is
+local on `develop`; no commit, push, deployment, real email, WhatsApp message,
+account setting or credential change was performed.
+
+Latest launch context from the conversation: Paul registered only
+`realestatestaff.nz` through Rocketspark; `.co.nz` is postponed. Cloudflare
+onboarding assigned `damiete.ns.cloudflare.com` and `samara.ns.cloudflare.com`.
+The last shared dashboard showed Invalid nameservers; Paul must update them
+at Rocketspark and wait for Active before attaching root/www Worker domains.
+Google Workspace is being set up; preserve existing Google DNS records before
+switching authoritative DNS. Resend sender verification still needs to be
+confirmed for the custom domain. The user was instructed to set
+`CONTACT_TO_EMAIL=hello@realestatestaff.nz` in Worker runtime settings; public
+display code does not change those settings. No account state was inspected.
+
 ## Latest client changes — hero and logo
 
 **Latest readability adjustment:** the owner clarified that the wording beside

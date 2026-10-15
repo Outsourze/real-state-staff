@@ -89,7 +89,26 @@ text, and actions/social icon areas have at least 44px touch targets.
 
 Add the client's approved LinkedIn, Instagram and Facebook profile URLs to `socialProfileUrls` in `lib/contact-details.ts`. All three default to an empty string because the client has not supplied profile URLs. Until configured, icons are labeled, noninteractive images accompanied by “Social profiles coming soon.” No empty or `#` links are created.
 
-Only valid HTTPS URLs without embedded credentials become links. Configured profiles open in a new tab with `noopener noreferrer` and a meaningful accessible label. The same `SocialLinks` component supports dark text on light backgrounds or `tone="light"` for the footer. Email addresses, phone numbers and street addresses are intentionally omitted until real details are supplied.
+Only valid HTTPS URLs without embedded credentials become links. Configured profiles open in a new tab with `noopener noreferrer` and a meaningful accessible label. The same `SocialLinks` component supports dark text on light backgrounds or `tone="light"` for the footer. No street address has been supplied.
+
+The client approved the following public contact details on 15 October 2026:
+
+- Email: `hello@realestatestaff.nz` (`mailto:hello@realestatestaff.nz`).
+- Phone/WhatsApp: `+64 22 646 6569` (`tel:+64226466569` and
+  `https://wa.me/64226466569`).
+
+`businessContact` in `lib/contact-details.ts` is the single source of public
+contact values. `ContactLinks` displays email, phone and WhatsApp actions in
+the homepage contact section, the contact page introduction and the footer.
+Text is at least 16px, targets at least 44px, and long email addresses wrap
+when space is limited. WhatsApp opens in a new tab with an accessible notice
+and `noopener noreferrer`; no message is sent automatically. Its international
+digits-only URL follows the [official WhatsApp click-to-chat format](https://faq.whatsapp.com/5913398998672934).
+
+Visible contact details do not configure server delivery. The Worker still
+needs its runtime Resend settings, including the confirmed recipient
+`CONTACT_TO_EMAIL=hello@realestatestaff.nz`. Google Workspace inbox activation
+and Resend sender-domain verification must be completed for the custom domain.
 
 ## Optional legacy webhook
 

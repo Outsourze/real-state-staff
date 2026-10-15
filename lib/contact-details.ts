@@ -1,5 +1,13 @@
 export type SocialPlatform = "linkedin" | "instagram" | "facebook";
 
+// Client-approved public contact details. Email delivery settings remain server-only.
+export const businessContact = {
+  email: "hello@realestatestaff.nz",
+  phone: "+64 22 646 6569",
+  phoneHref: "tel:+64226466569",
+  whatsappHref: "https://wa.me/64226466569",
+} as const;
+
 // Add the client's approved profile URLs here when they are available.
 // Empty values display the icon without creating a link.
 export const socialProfileUrls: Record<SocialPlatform, string> = {

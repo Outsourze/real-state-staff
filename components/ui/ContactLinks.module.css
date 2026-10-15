@@ -1,0 +1,90 @@
+.list {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  min-width: 0;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: white;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.link:hover {
+  border-color: #6f897d;
+  background: #f1f5ed;
+}
+
+.icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background: #eaf0e7;
+}
+
+.copy {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+  min-width: 0;
+}
+
+.label,
+.value {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.label {
+  font-weight: 650;
+}
+
+.value {
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.compact {
+  gap: 4px;
+}
+
+.compact .link {
+  min-height: 56px;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.compact .link:hover .value {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.light .link,
+.light .value {
+  color: #e0ebe1;
+}
+
+.light .icon {
+  background: #ffffff14;
+  color: white;
+}
