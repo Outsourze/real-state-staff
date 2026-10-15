@@ -154,6 +154,40 @@ Payload:
 - The API rejects cross-origin requests when an `Origin` header is present, non-JSON content types, malformed JSON, invalid fields, filled honeypots, and request bodies larger than 16 KiB (including streamed bodies).
 - No request bodies, tokens, or personal information are logged by the application. Ensure the receiver and hosting logs follow the client's data handling policy.
 
+## Diagnosing a contact-form 502
+
+The first deployed failure was reproduced in the actual workerd runtime:
+`redirect: "error"` throws a TypeError before any outbound request is made.
+The contact route uses `redirect: "manual"` instead, and rejects returned 3xx
+responses through its existing non-2xx handling. It never follows Location or
+forwards authentication headers to another host. An isolated JavaScript test
+alone did not catch this runtime incompatibility; the workerd regression test
+below verifies both successful delivery and redirect rejection.
+
+The route now writes a `contact_delivery_failed` event to Cloudflare logs when
+upstream delivery fails. It includes only the provider, a fixed reason, request
+or receipt phase, elapsed milliseconds, upstream HTTP status when available,
+and an allowlisted exception type. It never logs exception messages, upstream
+response bodies, email addresses, enquiry text, API keys or webhook URLs.
+
+Deploy this code before looking for these events. In the Worker observability
+view, remove the `exists($metadata.error)` filter if it hides console entries,
+reproduce the form error, then inspect the matching `/api/contact` invocation
+and its `contact_delivery_failed` console event:
+
+- `upstream_rejected`: inspect `upstreamStatus` for authentication, permission,
+  validation, quota or provider outage failures. Check Resend logs in the team
+  that owns the configured API key.
+- `network_error`: the outbound request threw before a response was returned.
+  An immediate `TypeError` suggests request/runtime handling; it does not prove
+  an API-key problem.
+- `timeout`: delivery or reading its receipt exceeded the ten-second limit.
+- `invalid_receipt`: Resend returned success without a readable nonempty ID.
+
+A failed invocation with outcome `ok` means the application returned an HTTP
+error normally. CPU-limit errors on other requests do not establish the cause
+of this request. Do not repeatedly resend an enquiry while delivery is unknown.
+
 Before a public launch, connect an approved receiver, replace the draft privacy policy, and configure hosting-level rate limiting or appropriate abuse protection for the endpoint. Origin and honeypot checks alone do not prevent scripted submissions.
 
 ## Role links
@@ -171,11 +205,22 @@ Then navigate to `#contact`. Unrecognised role values are ignored.
 ## Verification
 
 `npm run test:contact` runs the real route, schema and email template with an
-isolated environment and mocked fetch: **38 checks**, zero external requests.
+isolated environment and mocked fetch: **46 checks**, zero external requests.
 It covers Resend configuration, recipient/sender restrictions, receipt checks,
 Reply-To, escaped HTML, all fields, duplicate keys, quota failures, timeouts,
 and compatibility with the optional webhook. An illustrative email preview is
 written to ignored `output/qa/contact-email-preview.html`.
+Failure checks also verify diagnostic classifications and that secrets,
+personal information, provider messages and untrusted exception names stay out
+of logs.
+
+After `npm run build:cloudflare`, run `npm run test:contact:worker` to execute
+the real OpenNext Worker bundle inside workerd: **7 checks**, zero external
+requests. Wrangler bundles locally with `--dry-run`; dummy email bindings and
+an intercepted outbound service prevent real delivery. The checks cover a
+valid receipt, authentication rejection, rate limits, provider errors,
+redirects without credential forwarding, missing receipts and missing Preview
+settings. Reports and bundles are written to ignored `output/qa/contact-worker`.
 
 `npm run test:browser` starts an owned local server with all delivery settings
 explicitly blank. It checks the truthful unsent response, then uses browser-only

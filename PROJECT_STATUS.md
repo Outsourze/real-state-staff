@@ -2,6 +2,56 @@
 
 Last updated: **2026-10-15 (Asia/Manila)**.
 
+## Contact-form 502 — root cause fixed locally, Preview deployment pending
+
+Latest screenshots confirm Cloudflare zone `realestatestaff.nz` is Active,
+root and `www` are attached to the production Worker, and Resend shows the
+root domain Verified with sending enabled. The user has configured the three
+production runtime secrets; encrypted values and Google inbox operation have
+not been independently verified. This supersedes the earlier pending DNS and
+Resend verification context below.
+
+The page loads, but submitting the form shows `delivery_unknown`. Resend logs
+are reportedly empty. The supplied `/api/contact` invocation returned 502 with
+outcome `ok`, wall time 16ms and CPU time 15ms. It did not time out or terminate
+for CPU exhaustion. The displayed CPU-limit errors belong to a separate
+`GET /.env.stage` request; do not attribute them to the contact POST.
+
+The user committed and deployed the safe diagnostics to `develop`. Its initial
+503 meant missing/invalid Preview delivery settings; after those were updated,
+it returned 502. The separate blank-message console row contains structured
+diagnostics: `provider=resend`, `reason=network_error`, `errorType=TypeError`,
+`phase=request`, `elapsedMs=0`. The POST invocation row itself only summarizes
+the request. Keep the event view unfiltered to find the console row.
+
+Reproduced the exact failure in local workerd using the built OpenNext Worker,
+dummy bindings and a fully intercepted outbound service. The runtime throws
+because it does not implement `redirect: "error"`; no mail request is made.
+Changed the route to `redirect: "manual"`. Redirect responses are rejected by
+the existing non-2xx handling, without following Location, forwarding tokens,
+falling back to another provider or falsely reporting success. Existing safe
+diagnostics, request validation and idempotency behavior remain intact.
+
+All 46 isolated contact checks and 7 actual workerd checks pass, with zero real
+outbound requests or messages. The latter cover successful sending, auth/quota/
+provider errors, redirect rejection, invalid receipts and missing Preview
+settings. The Cloudflare build (Next.js, TypeScript and OpenNext bundle) passes.
+Run `npm run build:cloudflare` before `npm run test:contact:worker`; it uses
+Wrangler's dry-run bundle and the installed Miniflare compatibility helper.
+All test runtimes were disposed. The working tree was clean before this fix;
+changes are local on `develop`, without our committing, pushing or deploying.
+Next: user pushes the fix to develop, tests its Preview with its own runtime
+secrets, confirms receipt at Paul's inbox, then merges to main for Production.
+
+Build troubleshooting context: earlier downloaded log was Production while
+the user was editing develop Preview settings. They are deliberately testing
+develop first. Preview build now runs after settings troubleshooting; current
+intended build command is `npm ci && npm run build:cloudflare`, with build
+variable `SKIP_DEPENDENCY_INSTALL=true`, cache off temporarily, and Preview
+command `npx wrangler preview`. Do not require merging to main to test Preview.
+Existing Previews need their own secrets; changing Previews Base only applies
+to newly created Previews. Runtime email secrets are separate from build vars.
+
 ## Latest client changes — public contact details
 
 Paul supplied `hello@realestatestaff.nz` and phone/WhatsApp `+64 22 646 6569`
