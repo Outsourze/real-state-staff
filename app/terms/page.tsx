@@ -24,7 +24,7 @@ export default function TermsPage() {
       </p>
       <h2>Pricing and services</h2>
       <p>
-        The advertised starting price of NZ$995 per month is provided in the
+        The advertised starting price of $1,295 per month is provided in the
         client’s website brief. The applicable currency, taxes, working hours,
         role scope, minimum term and service inclusions must be confirmed in a
         personalised quote and written agreement.

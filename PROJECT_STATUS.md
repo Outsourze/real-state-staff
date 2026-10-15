@@ -1,8 +1,113 @@
 # Real Estate Staff — continuation notes
 
-Last updated: **2026-10-14 (Asia/Manila)**.
+Last updated: **2026-10-15 (Asia/Manila)**.
 
-## Latest Cloudflare build diagnosis
+## Latest client changes — public contact details
+
+Paul supplied `hello@realestatestaff.nz` and phone/WhatsApp `+64 22 646 6569`
+for display. These are implemented in `businessContact` in
+`lib/contact-details.ts`, with reusable `ContactLinks` and a CSS Module.
+The homepage contact section, dedicated contact introduction and footer show
+clickable email, telephone and WhatsApp links. Destinations are
+`mailto:hello@realestatestaff.nz`, `tel:+64226466569`, and
+`https://wa.me/64226466569`. All visible labels/values are at least 16px,
+targets at least 44px, email wraps on narrow layouts, and the WhatsApp link
+has a new-tab notice and `noopener noreferrer`. No message is sent on page load.
+
+The full Cloudflare build/TypeScript pass, and generated home/contact HTML
+contains the exact approved email, phone and WhatsApp destinations. All 33
+browser checks pass, including automated accessibility checks and reflow at
+320–1920px and 200% text size. Desktop/mobile screenshots were reviewed with
+no horizontal overflow. Email delivery credentials were blank in the owned
+test server; no real messages were sent, and test processes have stopped.
+
+The working tree was clean at the start of this contact update, so the earlier
+hero/logo/price changes have been committed by the user. This contact update is
+local on `develop`; no commit, push, deployment, real email, WhatsApp message,
+account setting or credential change was performed.
+
+Latest launch context from the conversation: Paul registered only
+`realestatestaff.nz` through Rocketspark; `.co.nz` is postponed. Cloudflare
+onboarding assigned `damiete.ns.cloudflare.com` and `samara.ns.cloudflare.com`.
+The last shared dashboard showed Invalid nameservers; Paul must update them
+at Rocketspark and wait for Active before attaching root/www Worker domains.
+Google Workspace is being set up; preserve existing Google DNS records before
+switching authoritative DNS. Resend sender verification still needs to be
+confirmed for the custom domain. The user was instructed to set
+`CONTACT_TO_EMAIL=hello@realestatestaff.nz` in Worker runtime settings; public
+display code does not change those settings. No account state was inspected.
+
+## Latest client changes — hero and logo
+
+**Latest readability adjustment:** the owner clarified that the wording beside
+the building icon looked small/soft and had too much space underneath. The
+website logo now uses larger letter heights (23/18/12 units), stronger outlined
+weights (600/500/500), darker secondary text `#476855`, and tighter gaps between
+lines. Its viewBox is 353 × 80 and transparent export 3840 × 870. Header/footer
+use this readable version. The prior reference-matched normal/light SVGs and
+3840 × 892 PNG are preserved as `brand-logo-reference.svg`,
+`brand-logo-light-reference.svg` and `brand-logo-reference-4k.png` in public.
+Desktop logo width increased from 288px to 336px; header vertical padding is
+10px. Menu collapse/dialog resize thresholds both use 1180/1181px so navigation
+has enough room. Mobile logo remains flexible beside the menu button. Hero
+copy/layout and existing user pricing edits were preserved.
+Validation for this adjustment: Cloudflare build (including TypeScript) and
+all 33 browser checks pass. Desktop/mobile header screenshots were reviewed;
+the wording is visibly larger/darker, with no menu wrapping or horizontal
+overflow. Email delivery was disabled in the owned test server. No commit,
+push, deployment or account-setting change was performed.
+
+**Closer logo reference refinement:** the later 517 × 133 client image was used
+to refine the logo further. Columns are wider, main lettering and STAFF taller,
+the divider darker and moved right, and the tagline lighter and relatively
+narrower. The SVG's tightly cropped viewBox is now 353 × 82; outlined text uses
+Manrope weights 550/400/400 fitted to the visible bounds of each line. Logo
+colors are forest `#003D31` and sage `#7D9886`. Header/footer intrinsic dimensions,
+symbol and favicon match. The transparent 4K export is now **3840 × 892**.
+Only logo assets, image intrinsic dimensions and related documentation changed
+in this follow-up; the approved hero copy and existing user pricing edits remain.
+The refined assets decode correctly, including PNG transparency. The Cloudflare
+build, TypeScript and all 33 browser checks pass with this refinement; the
+desktop screenshot was visually reviewed. No commit, push or deployment was
+performed. Existing continuation notes and asset documentation are updated.
+
+The client supplied updated hero wording and a full logo reference. Implemented:
+
+- Hero heading: **The people behind your real estate business.**
+- Description: **Experienced real estate professionals, working as an extension
+  of your team.** Three balanced desktop heading lines wrap naturally on phones.
+- Recreated the full logo with three architectural columns, slim vertical
+  divider, REAL ESTATE above STAFF, and the PEOPLE BEHIND PROPERTY tagline.
+  The normal forest/sage and matching light SVGs use outlined lettering so
+  their appearance does not depend on browser fonts. Header/footer now use
+  these full logos through `BrandLogo`; the standalone symbol/favicon match.
+- Saved `public/brand-logo.svg`, `public/brand-logo-light.svg`, and transparent
+  `public/brand-logo-4k.png` (**3840 × 870** after readability adjustment).
+  The 3840 × 892 reference reconstruction and earlier 4K symbol PNGs are preserved.
+  See `docs/brand-assets.md` for construction details and the source limitation:
+  this is a faithful vector reconstruction of the small screenshot, not the
+  original artwork. Exact source typeface/colors were unavailable.
+- Footer columns can shrink at 200% text size; the larger logo no longer
+  causes horizontal overflow at tablet sizes. Mobile header keeps logo and
+  menu button on one row, with the logo shrinking to fit.
+
+The final Cloudflare build and TypeScript pass. All **33 browser checks pass**
+after the footer and mobile-header adjustments, covering 320–1920px layouts,
+automated WCAG A/AA checks, 200% text resizing, text spacing, navigation and the
+shared enquiry form. Desktop and mobile hero screenshots were visually
+reviewed; the logo/menu stay on one mobile header row. All test-server email
+settings were blank, no real email was sent, and the owned browser/server were
+stopped. Evidence is in ignored `output/qa/`; generated logo preview and the
+one-off font-outline generator are in `output/qa/brand-reference/`.
+
+Existing user edits to `$1,295/month` pricing in MarketingSections, terms, and
+the website brief were preserved. No email configuration, Git commit/push,
+DNS, hosting setting or deployment was changed during this hero/logo update.
+The user reports the previous site is deployed and contact emails work;
+that report was not independently verified against their inbox. Client custom
+domains have not yet been supplied.
+
+## Previous Cloudflare build diagnosis — resolved locally
 
 The first `develop` screenshot failed because Cloudflare ran `pnpm run build`
 while the project declares npm. After changing that, the Next.js build passed,
@@ -25,8 +130,9 @@ Implemented the deployment setup locally:
 **Cloudflare dashboard action still needed:** build command
 `npm run build:cloudflare`; production deploy `npx wrangler deploy --keep-vars`;
 non-production deploy `npx wrangler preview`; root `/`. Keep production `main`.
-Push these local changes to `develop` before retrying. No dashboard settings,
-Git commits, pushes or deployments were performed by this fix.
+These changes were subsequently committed by the user and are present on
+`develop`. No dashboard settings, Git commits, pushes or deployments were
+performed by the assistant during that fix.
 
 Validation: the full Cloudflare build passes on pinned Next.js 16.3.8; Wrangler
 deploy dry-run passes (about 1.35 MiB gzip); lint, typecheck and all 38 isolated
@@ -38,8 +144,9 @@ Hosted Preview creation still requires a Cloudflare build after pushing.
 
 Preview runtime settings/secrets do not inherit production values. Configure
 email settings for the Preview Base or individual Preview separately if needed.
-The local working tree was clean before the diagnosis; older notes saying all
-website work is uncommitted are historical. Only this deployment fix is local.
+The local working tree was clean before that diagnosis; older notes saying all
+website work is uncommitted are historical. The current local work is the
+hero/logo update and the user's existing pricing edits.
 
 ## Email sending — implemented, awaiting configuration
 
@@ -119,7 +226,7 @@ verified locally. The content maximum is 1200px, excluding responsive gutters.
 
 The landing page is implemented and ready for local/client review. Do not
 restart or replace the completed website when continuing. The website work
-has been committed by the user on `develop`; this deployment fix remains local.
+has been committed by the user on `develop`; the hero/logo update remains local.
 No commit, push or deployment was performed by the assistant.
 
 The complete original brief is saved in `docs/website-brief.md`. The design

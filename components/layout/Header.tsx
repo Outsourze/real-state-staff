@@ -67,7 +67,7 @@ export function Header() {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     dialog?.showModal();
-    const media = matchMedia("(min-width: 1101px)");
+    const media = matchMedia("(min-width: 1181px)");
     const closeOnDesktop = () => {
       if (media.matches) setOpen(false);
     };

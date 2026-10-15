@@ -1,5 +1,8 @@
 # Photography sources
 
+Client logo assets and their reconstruction notes are documented separately
+in [brand-assets.md](brand-assets.md).
+
 Downloaded and checked on 14 October 2026. These are locally stored stock photographs, optimized as WebP using Sharp. They are editorial visuals for the website and do not depict Real Estate Staff's own premises, founders, employees, or clients.
 
 | Local file | Dimensions | Size | Photographer / source | License |

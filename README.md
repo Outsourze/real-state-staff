@@ -53,6 +53,9 @@ Screenshots and detailed reports are saved in the ignored `output/qa/` directory
 - Local optimized WebP photography and a lightweight SVG brand mark.
 - Privacy and terms draft routes, metadata, Open Graph, sitemap and robots.
 - Clearly disclosed sample testimonials. No invented social account links.
+- Client-approved email, phone and WhatsApp links in the contact page,
+  homepage contact section and footer: `hello@realestatestaff.nz`,
+  `+64 22 646 6569`. Public values live in `lib/contact-details.ts`.
 
 The owner subsequently requested a new hero, larger text and colored cards,
 and authorized improving the design freely. The original content and palette
@@ -60,6 +63,16 @@ remain in `docs/website-brief.md`; current decisions are in `PROJECT_STATUS.md`.
 
 Social URLs can be added in `lib/contact-details.ts`. Until configured, icons
 are labeled coming-soon placeholders rather than links to invented profiles.
+
+The client-approved hero wording and logo reference were applied on 15 October
+2026. Full outlined logos are `public/brand-logo.svg` and
+`public/brand-logo-light.svg`; a transparent 3840 × 870 PNG is available at
+`public/brand-logo-4k.png`. Website lettering was enlarged and strengthened
+for readability, with tighter line/header spacing. The closer-reference
+artwork is preserved as `public/brand-logo-reference.svg` and
+`public/brand-logo-reference-4k.png` (3840 × 892).
+See [docs/brand-assets.md](docs/brand-assets.md) for the reference reconstruction
+notes. Earlier symbol-only PNGs are preserved.
 
 ## Enquiry delivery
 

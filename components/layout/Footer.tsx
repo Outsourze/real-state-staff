@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import { ContactLinks } from "@/components/ui/ContactLinks";
 
 export function Footer() {
   return (
@@ -28,7 +29,8 @@ export function Footer() {
             <Link href="/contact" className="footer-contact">
               Let’s talk <ArrowUpRight size={24} aria-hidden="true" />
             </Link>
-            <SocialLinks tone="light" />
+            <ContactLinks light compact />
+            <SocialLinks tone="light" className="mt-6" />
           </div>
         </div>
         <div className="footer-bottom">

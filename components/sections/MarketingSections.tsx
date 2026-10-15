@@ -255,7 +255,7 @@ export function PricingSection() {
           >
             Dedicated real estate staff from{" "}
             <span className="mt-4 block text-[3rem] lg:text-[3.5rem]">
-              NZ$995
+              $1,295
               <span className="text-[1.5rem] tracking-[-0.02em]">/month</span>
             </span>
           </h2>

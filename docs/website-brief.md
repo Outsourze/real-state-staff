@@ -562,7 +562,7 @@ Dark forest green panel.
 
 Heading:
 
-"Dedicated real estate staff from NZ$995/month"
+"Dedicated real estate staff from $1,295/month"
 
 Supporting text:
 
