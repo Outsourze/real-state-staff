@@ -40,13 +40,13 @@ export function HeroSection() {
           <div className="hero-content">
             <p className="eyebrow">People behind property</p>
             <h1 id="hero-heading">
-              The right people.
-              <br />
-              More <span>room to grow.</span>
+              <span>The people behind</span>{" "}
+              <span>your real estate</span>{" "}
+              <span>business.</span>
             </h1>
             <p className="hero-description">
-              Dedicated real estate professionals who take care of the everyday,
-              so you can focus on your clients and your next chapter.
+              Experienced real estate professionals, working as an extension of
+              your team.
             </p>
             <div className="hero-actions">
               <Button href="/contact">Build your team</Button>
