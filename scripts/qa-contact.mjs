@@ -97,6 +97,7 @@ async function run(
         }
       : {}),
     fetch: async (url, options) => {
+      assert.equal(options.redirect, "manual", "Worker-supported redirect mode");
       calls.push({ url: String(url), options });
       assert(receiver, "Unexpected attempted outbound request in test");
       return receiver(url, options);
@@ -209,7 +210,7 @@ const calls = await run("Accepted receiver confirms receipt", {
 });
 assert.equal(calls.length, 1);
 assert.equal(calls[0].options.headers.Authorization, "Bearer test-token");
-assert.equal(calls[0].options.redirect, "error");
+assert.equal(calls[0].options.redirect, "manual");
 const forwarded = JSON.parse(calls[0].options.body);
 assert.equal(forwarded.role, "Executive Assistant");
 assert(!("website" in forwarded), "Honeypot is not forwarded");
@@ -309,7 +310,7 @@ assert.equal(
   sent[0].options.headers["Idempotency-Key"],
   `contact/${submissionId}`,
 );
-assert.equal(sent[0].options.redirect, "error");
+assert.equal(sent[0].options.redirect, "manual");
 assert.equal(sent[0].options.cache, "no-store");
 const notification = JSON.parse(sent[0].options.body);
 assert.equal(
@@ -406,6 +407,29 @@ for (const status of [401, 403, 422, 429, 500, 503, 409])
       ),
     diagnostic: { reason: "upstream_rejected", upstreamStatus: status, provider: "resend" },
   });
+for (const status of [301, 302, 303, 307, 308]) {
+  const redirected = await run(`Resend ${status} redirect is rejected without following Location`, {
+    env: { ...resendEnv, CONTACT_WEBHOOK_URL: "https://receiver.example.test" },
+    expected: 502,
+    code: "delivery_failed",
+    receiver: async () => new Response(null, {
+      status,
+      headers: { Location: "https://other.example.test/collect" },
+    }),
+    diagnostic: { reason: "upstream_rejected", upstreamStatus: status },
+  });
+  assert.equal(redirected.length, 1, "No redirect or fallback request");
+}
+await run("Legacy webhook redirect is also rejected", {
+  env: { CONTACT_WEBHOOK_URL: "https://receiver.example.test" },
+  expected: 502,
+  code: "delivery_failed",
+  receiver: async () => new Response(null, {
+    status: 302,
+    headers: { Location: "https://other.example.test/collect" },
+  }),
+  diagnostic: { reason: "upstream_rejected", upstreamStatus: 302, provider: "webhook" },
+});
 await run("Resend 2xx without a receipt is unconfirmed", {
   env: resendEnv,
   expected: 502,

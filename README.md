@@ -22,6 +22,14 @@ npm run test:contact
 npm run test:browser
 ```
 
+To verify email sending in the actual Cloudflare Worker runtime with dummy
+credentials and intercepted requests (no real emails):
+
+```sh
+npm run build:cloudflare
+npm run test:contact:worker
+```
+
 To check role cards in an already-running local development server:
 
 ```sh

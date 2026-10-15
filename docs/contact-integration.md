@@ -156,6 +156,14 @@ Payload:
 
 ## Diagnosing a contact-form 502
 
+The first deployed failure was reproduced in the actual workerd runtime:
+`redirect: "error"` throws a TypeError before any outbound request is made.
+The contact route uses `redirect: "manual"` instead, and rejects returned 3xx
+responses through its existing non-2xx handling. It never follows Location or
+forwards authentication headers to another host. An isolated JavaScript test
+alone did not catch this runtime incompatibility; the workerd regression test
+below verifies both successful delivery and redirect rejection.
+
 The route now writes a `contact_delivery_failed` event to Cloudflare logs when
 upstream delivery fails. It includes only the provider, a fixed reason, request
 or receipt phase, elapsed milliseconds, upstream HTTP status when available,
@@ -197,7 +205,7 @@ Then navigate to `#contact`. Unrecognised role values are ignored.
 ## Verification
 
 `npm run test:contact` runs the real route, schema and email template with an
-isolated environment and mocked fetch: **40 checks**, zero external requests.
+isolated environment and mocked fetch: **46 checks**, zero external requests.
 It covers Resend configuration, recipient/sender restrictions, receipt checks,
 Reply-To, escaped HTML, all fields, duplicate keys, quota failures, timeouts,
 and compatibility with the optional webhook. An illustrative email preview is
@@ -205,6 +213,14 @@ written to ignored `output/qa/contact-email-preview.html`.
 Failure checks also verify diagnostic classifications and that secrets,
 personal information, provider messages and untrusted exception names stay out
 of logs.
+
+After `npm run build:cloudflare`, run `npm run test:contact:worker` to execute
+the real OpenNext Worker bundle inside workerd: **7 checks**, zero external
+requests. Wrangler bundles locally with `--dry-run`; dummy email bindings and
+an intercepted outbound service prevent real delivery. The checks cover a
+valid receipt, authentication rejection, rate limits, provider errors,
+redirects without credential forwarding, missing receipts and missing Preview
+settings. Reports and bundles are written to ignored `output/qa/contact-worker`.
 
 `npm run test:browser` starts an owned local server with all delivery settings
 explicitly blank. It checks the truthful unsent response, then uses browser-only

@@ -251,7 +251,10 @@ export async function POST(request: Request) {
       headers: deliveryHeaders,
       body: deliveryBody,
       signal: controller.signal,
-      redirect: "error",
+      // Workerd rejects redirect: "error" before making any request. Manual
+      // mode returns 3xx responses, which the !response.ok branch rejects,
+      // without following Location or forwarding credentials to another host.
+      redirect: "manual",
       cache: "no-store",
     });
 

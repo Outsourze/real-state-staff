@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test:browser": "node scripts/qa-browser.mjs",
     "test:roles:dev": "node scripts/qa-browser.mjs --roles-only",
-    "test:contact": "node scripts/qa-contact.mjs"
+    "test:contact": "node scripts/qa-contact.mjs",
+    "test:contact:worker": "node scripts/qa-contact-worker.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
